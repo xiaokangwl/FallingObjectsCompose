@@ -1,33 +1,6 @@
 # FallingObjectsCompose
 点击某处从点击处，弹出一个自定义图片或其它的物体，点击后弹出然后自由落体到底部，最后渐变消失
 
-问题的原因分析和解决方案如下：
-
----
-
-### 问题 1：物体往左边或右边侧边掉出屏幕
-- **原因**：
-  - 当设置 `rotation = Random.nextFloat() * 360f` 时，图片会随机旋转，但旋转可能导致图片的显示边界超出原来的范围。
-  - `graphicsLayer` 的 `rotationZ` 属性默认以组件的左上角为旋转原点，这会导致旋转后的图片偏移。
-
-- **解决方案**：
-  - 使用 `graphicsLayer(transformOrigin = TransformOrigin.Center)` 将旋转的原点设置为图片的中心，确保旋转不会导致位置偏移。
-  - 调整 `offset` 的计算，确保图片的中心点对齐到点击位置。
-
----
-
-### 问题 2：多次点击后只有部分物体出现
-- **原因**：
-  - 可能是协程竞争或动画状态未正确初始化导致某些物体的动画被覆盖。
-  - 如果物体的动画状态不是独立的，多个物体可能会共享同一个动画实例，从而导致问题。
-
-- **解决方案**：
-  - 使用 `LaunchedEffect(obj.id)` 确保每个物体的动画状态是独立的。
-  - 确保物体的 `Animatable` 实例是唯一的，并且每次点击都正确触发动画。
-
----
-
-### 修复后的完整代码
 
 ```kotlin name=FallingObjectsImageActivity.kt
 import android.os.Bundle
@@ -192,5 +165,5 @@ fun FallingObjectComposable(
    - 图片在底部停留 1 秒后，逐渐变透明并完全消失。
 
 
-###图片预览
+### 图片预览
 ![图片预览](https://qfx-img.pages.dev/v2/GnkR095.gif "图片预览")
